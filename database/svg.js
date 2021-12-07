@@ -1,9 +1,10 @@
 const pool = require('./pool');
 
-const getSVG = (request, response) => {
+async function getSVG (request, response) {
+  await pool.connect();
     const municipio = request.params.nome;
   
-    pool.query('SELECT ST_AsSVG(geom) FROM municipio WHERE nome ilike $1', [municipio], (error, results) => {
+    pool.Queryl.SQL.Text('SELECT ST_AsSVG(geom) FROM municipio WHERE nome ilike $1', [municipio], (error, results) => {
       if (error) {
         throw error;
       }
@@ -11,7 +12,8 @@ const getSVG = (request, response) => {
     });
   };
   
-  const getViewBox = (request, response) => {
+  async function  getViewBox (request, response) {
+    await pool.connect();
     const municipio = request.params.nome;
   
     pool.query('SELECT getViewBox($1)', [municipio], (error, results) => {
